@@ -38,19 +38,16 @@ MCP client config (Claude Desktop / Cursor):
 This is a local stdio server, so Smithery distributes it as an MCPB bundle (not a hosted URL).
 
 ```
-npm run bundle                    # -> vcm-mcp.mcpb (~13 MB, dist + production deps + manifest.json)
-npx -y @anthropic-ai/mcpb@latest validate manifest.json
+npm run bundle                  # -> vcm-mcp.mcpb (~13 MB, dist + production deps + manifest.json)
+npm run bundle:verify
+npx -y @smithery/cli@latest auth login      # one-time browser login; also writes the token the script reads
+npm run publish:smithery -- <namespace>/vcm-mcp
 ```
 
-Publishing needs an account token and must be done in an interactive terminal (browser login):
-
-```
-npx -y @smithery/cli@latest auth login          # prints an auth_url; open it, then the process finishes
-npx -y @smithery/cli@latest namespace list      # pick the namespace (org) the server goes under
-npx -y @smithery/cli@latest mcp publish vcm-mcp.mcpb -n <namespace>/vcm-mcp
-```
-
-The old top-level `smithery publish` was removed in CLI v4; the current form is `smithery mcp publish`.
+`scripts/publish.mjs` calls the registry API directly: `@smithery/cli@4.11.1` forwards `manifest.tools` to
+the registry as-is, the registry requires an `inputSchema` object per tool, and MCPB's manifest schema forbids
+`inputSchema` — so the CLI cannot publish a bundle that declares tools. The script reads the API key from the
+Smithery CLI settings file (or `SMITHERY_API_KEY`), upserts `<namespace>/vcm-mcp` and uploads the bundle.
 
 `user_config` in `manifest.json` maps to env vars at install time: `project_dir` → `VCM_ROOT`,
 `api_key` → `OPENAI_API_KEY`, `base_url` → `OPENAI_BASE_URL`, `model` → `OPENAI_MODEL`.

@@ -15,6 +15,7 @@
     "start": "node dist/index.js",
     "bundle": "npm run build && node scripts/bundle.mjs",
     "bundle:verify": "node scripts/verify-bundle.mjs",
+    "publish:smithery": "node scripts/publish.mjs",
     "test": "npm run build && node test/smoke.mjs"
   },
   "dependencies": {

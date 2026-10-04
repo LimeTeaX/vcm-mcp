@@ -6,7 +6,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-const entry = path.join(import.meta.dirname, "..", "dist", "index.js");
+const entry = process.env.VCM_ENTRY ?? path.join(import.meta.dirname, "..", "dist", "index.js");
 const SUMMARY = "# SKILL.md\n\n## Context\n- smoke summary\n\n## State\n- ok\n";
 
 let lastRequest = null;
@@ -41,7 +41,7 @@ await writeFile(
 );
 const originalRaw = await readFile(path.join(work, ".vcm", "history.json"), "utf8");
 
-const childEnv = { ...process.env, OPENAI_MODEL: "from-client" }; // .env must not clobber an env the client passed
+const childEnv = { ...process.env, OPENAI_MODEL: "from-client", VCM_ROOT: work }; // MCPB sets VCM_ROOT; the server must honor it
 delete childEnv.OPENAI_API_KEY;
 delete childEnv.OPENAI_BASE_URL;
 const child = spawn(process.execPath, [entry], {

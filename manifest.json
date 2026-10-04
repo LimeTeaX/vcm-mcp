@@ -1,0 +1,55 @@
+{
+  "manifest_version": "0.3",
+  "name": "vcm-mcp",
+  "version": "1.0.0",
+  "description": "Token-aware compaction of .vcm/history.json into SKILL.md, plus read/write of SKILL.md. Runs locally; the summarizer call goes to any OpenAI-compatible endpoint.",
+  "author": { "name": "LimeTeaX" },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "VCM_ROOT": "${user_config.project_dir}",
+        "OPENAI_API_KEY": "${user_config.api_key}",
+        "OPENAI_BASE_URL": "${user_config.base_url}",
+        "OPENAI_MODEL": "${user_config.model}"
+      }
+    }
+  },
+  "user_config": {
+    "project_dir": {
+      "type": "string",
+      "title": "Project directory",
+      "description": "Directory holding .vcm/history.json and SKILL.md. Defaults to the working directory.",
+      "required": false
+    },
+    "api_key": {
+      "type": "string",
+      "title": "API key",
+      "description": "Key for the OpenAI-compatible endpoint used by compact_memory. Not needed for the file tools.",
+      "required": false
+    },
+    "base_url": {
+      "type": "string",
+      "title": "Base URL",
+      "description": "OpenAI-compatible base URL.",
+      "default": "https://api.deepseek.com",
+      "required": false
+    },
+    "model": {
+      "type": "string",
+      "title": "Model",
+      "description": "Model used for summarization.",
+      "default": "deepseek-chat",
+      "required": false
+    }
+  },
+  "tools": [
+    { "name": "get_token_status", "description": "Token usage of .vcm/history.json against the context window." },
+    { "name": "compact_memory", "description": "Summarize the oldest history into SKILL.md format until it fits target_percent% of its token size." },
+    { "name": "read_skill_md", "description": "Read a SKILL.md file." },
+    { "name": "write_skill_md", "description": "Atomically write a SKILL.md file." }
+  ]
+}

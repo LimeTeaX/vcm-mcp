@@ -16,7 +16,8 @@ for (const f of [path.join(process.cwd(), ".env"), fileURLToPath(new URL("../.en
   }
 }
 
-const ROOT = process.cwd();
+// ponytail: VCM_ROOT exists for MCPB bundles, where the server's cwd is not the user's project
+const ROOT = process.env.VCM_ROOT ? path.resolve(process.env.VCM_ROOT) : process.cwd();
 const VCM_DIR = path.join(ROOT, ".vcm");
 const HISTORY_FILE = path.join(VCM_DIR, "history.json");
 const DEFAULT_SKILL = path.join(ROOT, "SKILL.md");

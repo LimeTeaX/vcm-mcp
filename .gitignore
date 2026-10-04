@@ -3,3 +3,5 @@ dist/
 .vcm/
 *.bak
 .env
+.mcpb-stage*/
+*.mcpb

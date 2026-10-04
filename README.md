@@ -33,6 +33,28 @@ MCP client config (Claude Desktop / Cursor):
 }
 ```
 
+## Publish to Smithery
+
+This is a local stdio server, so Smithery distributes it as an MCPB bundle (not a hosted URL).
+
+```
+npm run bundle                    # -> vcm-mcp.mcpb (~13 MB, dist + production deps + manifest.json)
+npx -y @anthropic-ai/mcpb@latest validate manifest.json
+```
+
+Publishing needs an account token and must be done in an interactive terminal (browser login):
+
+```
+npx -y @smithery/cli@latest auth login          # prints an auth_url; open it, then the process finishes
+npx -y @smithery/cli@latest namespace list      # pick the namespace (org) the server goes under
+npx -y @smithery/cli@latest mcp publish vcm-mcp.mcpb -n <namespace>/vcm-mcp
+```
+
+The old top-level `smithery publish` was removed in CLI v4; the current form is `smithery mcp publish`.
+
+`user_config` in `manifest.json` maps to env vars at install time: `project_dir` → `VCM_ROOT`,
+`api_key` → `OPENAI_API_KEY`, `base_url` → `OPENAI_BASE_URL`, `model` → `OPENAI_MODEL`.
+
 ## Env
 
 Any OpenAI-compatible endpoint works (`/chat/completions`); DeepSeek is the default so the $0 setup works out of the box.

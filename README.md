@@ -35,6 +35,8 @@ MCP client config (Claude Desktop / Cursor):
 
 ## Publish to Smithery
 
+Published: <https://smithery.ai/servers/jacksonmajuoke/vcm-mcp>
+
 This is a local stdio server, so Smithery distributes it as an MCPB bundle (not a hosted URL).
 
 ```
@@ -51,6 +53,16 @@ Smithery CLI settings file (or `SMITHERY_API_KEY`), upserts `<namespace>/vcm-mcp
 
 `user_config` in `manifest.json` maps to env vars at install time: `project_dir` → `VCM_ROOT`,
 `api_key` → `OPENAI_API_KEY`, `base_url` → `OPENAI_BASE_URL`, `model` → `OPENAI_MODEL`.
+
+Two limits of the stdio bundle, both expected:
+
+- No MCP URL: `https://vcm-mcp--jacksonmajuoke.run.tools` answers `404 Server not found` (the registry
+  records the `runToolsSlug` regardless; nothing is hosted until the bundle runs).
+- Not in the directory search: `smithery.ai/servers` indexes remote (`remote: true`) servers only.
+  The page itself is public.
+
+To get a hosted URL and a search listing, port `src/index.ts` to Smithery's remote `createServer`
+format and run `smithery deploy` — add only if a hosted endpoint is actually needed.
 
 ## Env
 
